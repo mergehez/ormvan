@@ -1,0 +1,15 @@
+{
+    "$schema": "./node_modules/oxlint/configuration_schema.json",
+    "plugins": ["import", "typescript", "vue", "unicorn", "oxc", "promise"],
+    "options": {
+        "typeCheck": true,
+        "typeAware": true
+    },
+    "rules": {
+        "no-useless-default-assignment": "off",
+        "no-floating-promises": "off",
+        "no-unused-vars": "off",
+        "no-empty-file": "off"
+    },
+    "ignorePatterns": ["**/dist/*.*", "**/node_modules/**/*.*", "resources/js/**/*.*", ".adonisjs/**/*.*", "tmp/**/*.*"]
+}

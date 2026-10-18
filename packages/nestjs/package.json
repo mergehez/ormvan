@@ -1,0 +1,35 @@
+{
+    "name": "@mergehez/ormvan-nestjs",
+    "version": "0.1.0",
+    "description": "NestJS integration for @mergehez/ormvan. Empty for now: the framework-agnostic engine is re-exported until NestJS-specific wiring lands.",
+    "type": "module",
+    "main": "./dist/index.js",
+    "types": "./src/index.ts",
+    "files": [
+        "src",
+        "dist"
+    ],
+    "exports": {
+        ".": {
+            "types": "./src/index.ts",
+            "development": "./src/index.ts",
+            "default": "./dist/index.js"
+        },
+        "./package.json": "./package.json"
+    },
+    "scripts": {
+        "build": "rm -rf dist && tsc -p tsconfig.build.json",
+        "watch": "tsc -p tsconfig.build.json --watch --preserveWatchOutput",
+        "typecheck": "tsc --noEmit",
+        "tsc": "tsc --noEmit"
+    },
+    "dependencies": {},
+    "peerDependencies": {
+        "@mergehez/ormvan": "^0.1.0"
+    },
+    "devDependencies": {
+        "@mergehez/ormvan": "^0.1.0",
+        "@types/node": "^26.6.4",
+        "typescript": "^7.1.0-dev.20261008.1"
+    }
+}

@@ -1,0 +1,91 @@
+{
+    "name": "@mergehez/ormvan-adonisjs",
+    "version": "0.1.0",
+    "description": "AdonisJS integration for @mergehez/ormvan: the ACE orm:migrate command, the database session store, and the VineJS exists/unique rules.",
+    "license": "MIT",
+    "author": "mergehez <argesozdogan@gmail.com>",
+    "homepage": "https://github.com/mergehez/ormvan#readme",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/mergehez/ormvan.git",
+        "directory": "packages/adonisjs"
+    },
+    "bugs": {
+        "url": "https://github.com/mergehez/ormvan/issues"
+    },
+    "keywords": [
+        "orm",
+        "sql",
+        "mysql",
+        "adonisjs",
+        "adonis",
+        "vinejs",
+        "session",
+        "migrations",
+        "typescript"
+    ],
+    "type": "module",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "engines": {
+        "node": ">=20"
+    },
+    "files": [
+        "src",
+        "dist"
+    ],
+    "exports": {
+        ".": {
+            "development": "./src/index.ts",
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        },
+        "./*": {
+            "development": "./src/*.ts",
+            "types": "./dist/*.d.ts",
+            "default": "./dist/*.js"
+        },
+        "./package.json": "./package.json"
+    },
+    "scripts": {
+        "build": "rm -rf dist && tsc -p tsconfig.build.json",
+        "watch": "tsc -p tsconfig.build.json --watch --preserveWatchOutput",
+        "test": "bun --env-file=../../.env --conditions development bin/test.ts",
+        "typecheck": "tsc --noEmit",
+        "tsc": "tsc --noEmit",
+        "prepublishOnly": "bun run build"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "dependencies": {},
+    "peerDependencies": {
+        "@adonisjs/core": "^7.5.0",
+        "@adonisjs/session": "^8.1.0",
+        "@mergehez/ormvan": "^0.1.0",
+        "@vinejs/vine": "^4.0.0"
+    },
+    "peerDependenciesMeta": {
+        "@adonisjs/session": {
+            "optional": true
+        },
+        "@vinejs/vine": {
+            "optional": true
+        }
+    },
+    "devDependencies": {
+        "@adonisjs/core": "^7.6.0",
+        "@adonisjs/session": "^8.1.0",
+        "@japa/assert": "^4.2.0",
+        "@japa/expect-type": "^2.0.4",
+        "@japa/plugin-adonisjs": "^5.2.0",
+        "@japa/runner": "^5.3.0",
+        "@mergehez/ormvan": "^0.1.0",
+        "@types/node": "^26.6.4",
+        "@vinejs/vine": "^4.4.0",
+        "knex": "^3.3.0",
+        "mysql2": "^3.24.5",
+        "reflect-metadata": "^0.2.2",
+        "typescript": "^7.1.0-dev.20261008.1"
+    }
+}

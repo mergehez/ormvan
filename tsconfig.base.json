@@ -1,0 +1,33 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "customConditions": ["development"],
+        "jsx": "preserve",
+        "isolatedModules": true,
+        "removeComments": true,
+        "esModuleInterop": true,
+        "strictNullChecks": true,
+        "allowSyntheticDefaultImports": true,
+        "forceConsistentCasingInFileNames": true,
+        "strictPropertyInitialization": true,
+        "experimentalDecorators": true,
+        "noImplicitAny": true,
+        "strictBindCallApply": true,
+        "strictFunctionTypes": true,
+        "noImplicitThis": true,
+        "skipLibCheck": true,
+        "incremental": true,
+        "declaration": false,
+        "sourceMap": true,
+        "rewriteRelativeImportExtensions": true,
+        "emitDecoratorMetadata": true,
+        "useDefineForClassFields": true,
+        "lib": ["ESNext", "DOM", "DOM.Iterable"],
+        "types": ["@types/node"],
+        "resolveJsonModule": true,
+        "allowJs": true,
+        "strict": true
+    }
+}

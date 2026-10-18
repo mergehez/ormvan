@@ -1,0 +1,19 @@
+{
+    "name": "ormvan",
+    "version": "0.0.1",
+    "private": true,
+    "description": "A framework-agnostic raw-SQL ORM engine, with one workspace package per framework adapter.",
+    "license": "MIT",
+    "type": "module",
+    "workspaces": ["packages/*"],
+    "scripts": {
+        "build": "bun run --filter '@mergehez/*' build",
+        "watch": "bun run --filter '@mergehez/*' watch",
+        "typecheck": "bun run --filter '@mergehez/*' typecheck",
+        "test": "bun run --filter '@mergehez/*' test",
+        "reinstall": "rm -f bun.lock && rm -rf node_modules && bun install"
+    },
+    "devDependencies": {
+        "typescript": "^7.1.0-dev.20261008.1"
+    }
+}

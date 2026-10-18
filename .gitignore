@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.DS_Store
+*.tsbuildinfo
+tsc-trace/
+.playwright-mcp/
+.env
+
+# Internal notes and dev tooling: kept out of the public repository.
+AGENTS.md
+ORM_COMPARISON.md
+SURFACES.md
+publish.ts
