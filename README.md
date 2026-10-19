@@ -11,12 +11,13 @@ an app loads.
 | package            | what it holds                                                                                                |
 | ------------------ | ------------------------------------------------------------------------------------------------------------ |
 | `@mergehez/ormvan`     | the engine, and nothing about any framework: models, builders, hooks, soft delete, migrations, and `mysql2`. |
-| `@mergehez/ormvan-adonisjs` | what an AdonisJS app needs: the ACE `orm:migrate` command, the `database` session store, the VineJS rules.   |
+| `@mergehez/ormvan-adonisjs` | the AdonisJS adapter: the ACE `orm:migrate` command, the `database` session store, the VineJS rules.          |
 | `@mergehez/ormvan-nestjs`   | the NestJS adapter. Empty for now: it re-exports the engine until NestJS-specific wiring lands.              |
 
-An app that uses no framework depends on `@mergehez/ormvan` alone. An app that uses AdonisJS depends on
-`@mergehez/ormvan-adonisjs`, which re-exports the engine and adds what AdonisJS asks for. Nothing under `@mergehez/ormvan` names a
-framework, so a framework the engine has not met yet — NestJS, or one of your own — is a package like the others.
+An app that uses no framework depends on `@mergehez/ormvan` alone. An app that uses a framework depends on that
+framework's adapter, which re-exports the engine and adds what the framework asks for. Nothing under
+`@mergehez/ormvan` names a framework, so a framework the engine has not met yet — NestJS, or one of your own — is a
+package like the others.
 
 ## Where to start
 
@@ -29,10 +30,11 @@ Start at [`docs/index.md`](./docs/index.md), or jump straight to the page you ne
 - [Hooks](./docs/hooks.md) — running your code before or after a read or a write
 - [Soft delete](./docs/soft-delete.md) — deletes that mark a row instead of removing it
 - [Migrations](./docs/migrations.md) — creating and changing the schema
-- [Commands](./docs/commands.md) — build, typecheck, test, and publishing
 - [Deliberate omissions](./docs/not-done.md) — what the engine does not do
 
 ## Commands
+
+These build and publish the packages themselves; they are not what an app runs.
 
 ```bash
 bun install                   # link the workspace packages together
@@ -44,3 +46,5 @@ bun run test                  # the engine's specs, against a scratch MySQL data
 Each command runs across the workspace; the same names work in a single package (`bun run --filter '@mergehez/ormvan'
 test`), and a package's `test` loads the repository's `.env` for its database connection — copy `.env.example` to
 `.env` once before running them.
+
+Publishing, and running an app against this checkout, are covered in [`docs/commands.md`](./docs/commands.md).

@@ -16,7 +16,7 @@ If one of these words is new to you, this is what it means on the following page
 | word              | meaning                                                                                                                                                                  |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **engine**        | this package, `@mergehez/ormvan`. It knows SQL, and nothing about your app or a framework.                                                                                  |
-| **adapter**       | a package that adds what one framework asks for, such as `@mergehez/ormvan-adonisjs`. It re-exports the engine, so an app imports the adapter alone.                              |
+| **adapter**       | an optional package that adds what one framework asks for, such as `@mergehez/ormvan-adonisjs`. It re-exports the engine, so an app that uses it imports the adapter alone. |
 | **app**, **host** | an application that depends on the engine.                                                                                                                               |
 | **configuration** | one file per app, `app/orm/project_orm.ts`, where the app says how to reach the database, what its clock is, and who is logged in.                                       |
 | **model**         | a class naming a table, its columns, its hidden columns and its relations.                                                                                               |
@@ -37,5 +37,7 @@ If this is your first time here, read them in this order.
 5. [Hooks](./hooks.md) — running your code before or after a read or a write.
 6. [Soft delete](./soft-delete.md) — deletes that mark a row instead of removing it.
 7. [Migrations](./migrations.md) — creating and changing the schema.
-8. [Commands](./commands.md) — the commands this repository has.
-9. [Deliberate omissions](./not-done.md) — what the engine does not do.
+8. [Deliberate omissions](./not-done.md) — what the engine does not do.
+
+The commands used to build and publish the packages themselves live in the repository's
+[README](https://github.com/mergehez/ormvan#commands).

@@ -53,7 +53,6 @@ export default defineConfig({
 
 - [Consuming it from an app](https://github.com/mergehez/ormvan/blob/main/docs/consuming.md)
 - [Migrations](https://github.com/mergehez/ormvan/blob/main/docs/migrations.md)
-- [Commands](https://github.com/mergehez/ormvan/blob/main/docs/commands.md)
 - [The engine's own documentation](https://github.com/mergehez/ormvan/blob/main/docs/index.md)
 
 ## License

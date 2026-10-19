@@ -10,8 +10,8 @@ The engine exports one class, `Orm`, and one base model, `PlainBaseModel`. You n
 import { Orm, PlainBaseModel } from '@mergehez/ormvan';
 ```
 
-An AdonisJS app imports `@mergehez/ormvan-adonisjs` here instead, which re-exports the same `Orm` and `PlainBaseModel` and adds
-the framework-specific pieces.
+An app that uses an adapter imports that package here instead, which re-exports the same `Orm` and `PlainBaseModel` and
+adds the framework-specific pieces.
 
 ```ts
 Orm.configure({
@@ -91,7 +91,7 @@ and use it anywhere:
 
 ```ts
 export class ModelBase extends PlainBaseModel {
-    static withRatingCount = scope((b: SubqueryBuilder<OrmModel>, kind: 'fav' | 'cepik' | 'resik', userId?: number) => b.withCountUnchecked(`${kind}s`).__claim());
+    static withRatingCount = scope((b: SubqueryBuilder<OrmModel>, kind: 'review' | 'comment' | 'like', userId?: number) => b.withCountUnchecked(`${kind}s`).__claim());
 }
 ```
 
@@ -99,9 +99,9 @@ The first parameter is the builder the scope needs, so a scope written for a sub
 builder that does not offer one:
 
 ```ts
-const games = await Game.orm().withRatingCount('fav', userId).get();
+const games = await Game.orm().withRatingCount('review', userId).get();
 const entries = await Game.orm()
-    .preloadCb('entries', (q) => q.withRatingCount('resik'))
+    .preloadCb('entries', (q) => q.withRatingCount('comment'))
     .get(); // same method
 ```
 

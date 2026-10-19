@@ -3,8 +3,8 @@
 An app installs the engine from npm, like any other dependency:
 
 ```bash
-npm install @mergehez/ormvan-adonisjs     # an AdonisJS app
-npm install @mergehez/ormvan              # an app with no framework
+npm install @mergehez/ormvan              # the engine on its own
+npm install @mergehez/ormvan-adonisjs     # the engine plus the AdonisJS pieces
 ```
 
 ## Which package to depend on
@@ -22,6 +22,9 @@ and re-exports everything the engine exports, so npm and bun install it for you.
 `import { Orm, PlainBaseModel } from '@mergehez/ormvan-adonisjs'` and
 `import { Orm, PlainBaseModel } from '@mergehez/ormvan'` name the same classes.
 
+The engine itself names no framework, so an app with no adapter — or one for a framework that has no adapter yet — uses
+`@mergehez/ormvan` directly and gets the same models, builders and migrations.
+
 ## What is inside the package
 
 A package ships its compiled runtime, the declarations that describe it, and the sources:
@@ -38,9 +41,8 @@ Because the runtime is JavaScript, a server starts the app with plain node:
 node bin/server.js
 ```
 
-There is no TypeScript loader in the picture, so no runner has to be handed a loader flag
-(`node --import @poppinss/ts-exec …`) to boot the app: `npm run start`, systemd, pm2 and a panel's own Node runner
-all work. That matters most inside `node_modules`, where node refuses to strip types by itself.
+There is no TypeScript loader in the picture, so any runner works — `npm run start`, systemd, pm2, a container command.
+That matters most inside `node_modules`, where node does not strip types.
 
 The types are separate from the runtime. Your `tsc` reads the package through `exports.types`, which points at the
 declarations the package shipped, so a type error in the engine shows up in your typecheck rather than at runtime.
@@ -48,19 +50,31 @@ If you would rather typecheck against the engine's own sources — so a source-l
 set `customConditions` to `["development"]` in your `tsconfig.json`. That is the condition `exports` uses for
 `src/*.ts`. Most apps do not need it.
 
-## Why a package, and not `file:../orm`
+## Why a package, and not a path into a checkout
 
 - A deploy uploads the app's `build/` directory and installs its dependencies there, so the dependency has to be
-  something npm can resolve from the app's own `package.json`. A path into a neighbouring checkout is not.
+  something npm can resolve from the app's own `package.json`.
 - npm and bun copy an installed dependency into the app's `node_modules`, which keeps module resolution inside the app.
-  The package then resolves `@adonisjs/core` to the app's own copy, and gets the app's running instance — its config,
-  its paths — when it asks the framework for something. A `file:` link would resolve from wherever the link points
-  instead, and hand the adapter a second copy of the framework that was never booted.
+  An adapter then resolves its framework to the app's own copy, and gets the app's running instance — its config, its
+  paths — when it asks the framework for something. A `file:` link resolves from wherever the link points instead, and
+  can hand the adapter a second copy of the framework that was never booted.
 
 ## What an app keeps for itself
 
-```
-<app>/app/orm/project_orm.ts   ← the app's configuration, plus its model base class (`ModelBase`)
+An app writes one configuration module — where the database is, what the clock is, and who is acting:
+
+```ts
+// <app>/app/orm/project_orm.ts
+import { Orm, PlainBaseModel } from '@mergehez/ormvan';
+
+Orm.configure({
+    getExecutor: (connectionName) => connections.executor(connectionName),
+    now: () => dt.unix(),
+    getAuthUser: (ctx) => authUser(ctx),
+});
+
+export { Orm };
+export class ModelBase extends PlainBaseModel {}
 ```
 
 Everything else belongs to the package, so every import of it in an app is the package itself:
@@ -72,15 +86,10 @@ import { Game } from '#models/game';
 const game = await Game.orm().where('id', id).first();
 ```
 
-An AdonisJS app names one more thing: the request context. The engine's core declares that context empty, because it
-never reads a member of it — it only forwards the value from `row.save(ctx)` to the `getAuthUser` callback. The
-adapter fills it in with AdonisJS' `HttpContext`, so an app that imports the adapter gets the typed context in
-`save(ctx)`:
-
-```ts
-// <app>/app/orm/project_orm.ts
-import '@mergehez/ormvan-adonisjs'; // narrows `OrmContext` to AdonisJS' `HttpContext`
-```
+An AdonisJS app imports `@mergehez/ormvan-adonisjs` in that configuration file instead. Besides re-exporting the
+engine, it narrows the request context: the engine's core declares that context empty, because it never reads a member
+of it — it only forwards the value from `row.save(ctx)` to the `getAuthUser` callback. The adapter fills it in with
+AdonisJS' `HttpContext`, so `save(ctx)` and `getAuthUser(ctx)` are typed against it.
 
 ## What this repository holds
 
