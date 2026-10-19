@@ -1,11 +1,10 @@
 # Consuming it from an app
 
-An app does not import these files by path. It depends on a package, and the package travels with the app as a
-tarball:
+An app installs the engine from npm, like any other dependency:
 
-```
-"@mergehez/ormvan-adonisjs": "file:vendor/orm-adonisjs.tgz"     ← in an AdonisJS app's package.json
-vendor/orm-adonisjs.tgz                                ← a packed tarball of the package
+```bash
+npm install @mergehez/ormvan-adonisjs     # an AdonisJS app
+npm install @mergehez/ormvan              # an app with no framework
 ```
 
 ## Which package to depend on
@@ -18,11 +17,12 @@ The engine and the framework-specific pieces are separate packages:
 | `@mergehez/ormvan-adonisjs` | the app is an AdonisJS app. This re-exports the engine, so it is the one import.    |
 | `@mergehez/ormvan-nestjs`   | the app is a NestJS app. It re-exports the engine and nothing else, for now.        |
 
-An app that depends on an adapter does not also list `@mergehez/ormvan`: the adapter depends on it, and re-exports
-everything the engine exports. So `import { Orm, PlainBaseModel } from '@mergehez/ormvan-adonisjs'` and
+An app that depends on an adapter does not also list `@mergehez/ormvan`: the adapter declares it as a peer dependency
+and re-exports everything the engine exports, so npm and bun install it for you. That makes
+`import { Orm, PlainBaseModel } from '@mergehez/ormvan-adonisjs'` and
 `import { Orm, PlainBaseModel } from '@mergehez/ormvan'` name the same classes.
 
-## What is inside a tarball
+## What is inside the package
 
 A package ships its compiled runtime, the declarations that describe it, and the sources:
 
@@ -42,28 +42,20 @@ There is no TypeScript loader in the picture, so no runner has to be handed a lo
 (`node --import @poppinss/ts-exec …`) to boot the app: `npm run start`, systemd, pm2 and a panel's own Node runner
 all work. That matters most inside `node_modules`, where node refuses to strip types by itself.
 
-Two properties the sources-only package had are kept:
+The types are separate from the runtime. Your `tsc` reads the package through `exports.types`, which points at the
+declarations the package shipped, so a type error in the engine shows up in your typecheck rather than at runtime.
+If you would rather typecheck against the engine's own sources — so a source-level problem is reported as yours —
+set `customConditions` to `["development"]` in your `tsconfig.json`. That is the condition `exports` uses for
+`src/*.ts`. Most apps do not need it.
 
-- a package type error shows up in the app's typecheck rather than at runtime. The app's `tsc` reads the package through
-  `exports.types`, which points at the declarations the engine shipped. An app that wants the check to run over the
-  sources themselves sets `customConditions` to `["development"]` in its `tsconfig.json`; that is the condition
-  `exports` uses for `src/*.ts`, and the same condition the adapter's tests pass to the runner, so a source-level error
-  becomes the app's error rather than the engine's;
-- `node ace build` compiles only the app's own code, and the app's runtime loads `dist/`.
+## Why a package, and not `file:../orm`
 
-`bun run build` writes each package's `dist/` and its declarations, so pack after building and a tarball is never
-stale. In development an app's `postinstall` can replace the installed copy with a symlink into this repository — the
-link resolves through the same `exports`, so `dist/` has to exist there too: `bun run watch` keeps it current while you
-edit the engine.
-
-## Why a tarball, and not `file:../orm`
-
-- A deploy uploads the app's `build/` directory and installs the dependencies inside it, so the package has to travel
-  inside that tarball. That is why each app lists `vendor/**` in its `adonisrc.ts` metaFiles.
-- npm and bun copy a tarball dependency into `node_modules`, which keeps module resolution inside the app. The package
-  then resolves `@adonisjs/core` to the app's own copy, and gets the app's running instance — its config, its paths —
-  when it asks the framework for something. A `file:` link would resolve from this repository instead, and hand the
-  adapter a second copy of the framework that was never booted.
+- A deploy uploads the app's `build/` directory and installs its dependencies there, so the dependency has to be
+  something npm can resolve from the app's own `package.json`. A path into a neighbouring checkout is not.
+- npm and bun copy an installed dependency into the app's `node_modules`, which keeps module resolution inside the app.
+  The package then resolves `@adonisjs/core` to the app's own copy, and gets the app's running instance — its config,
+  its paths — when it asks the framework for something. A `file:` link would resolve from wherever the link points
+  instead, and hand the adapter a second copy of the framework that was never booted.
 
 ## What an app keeps for itself
 
@@ -98,15 +90,26 @@ packages/adonisjs/    the AdonisJS adapter (the migrate command, the session sto
 packages/nestjs/      the NestJS adapter, empty for now
 ```
 
-## Moving from the single-package layout
+## Working on the engine and an app at once
 
-Before this repository was a monorepo, one package held everything, and an app imported `@app/orm`. The mapping is:
+An app outside this repository installs the published packages, so to run it against the code you are editing, link
+the packages into it. `bun link` registers a package from its own directory, then links it into the app by name:
 
-| old import                     | new import                                  |
-| ------------------------------ | ------------------------------------------- |
-| `@app/orm`                     | `@mergehez/ormvan` (or the adapter, which re-exports it) |
-| `@app/orm/mysql2`              | `@mergehez/ormvan/mysql2`                       |
-| `@app/orm/orm_migrations`      | `@mergehez/ormvan/orm_migrations`               |
-| `@app/orm/orm_session`         | `@mergehez/ormvan-adonisjs/orm_session`              |
-| `@app/orm/orm_vine`            | `@mergehez/ormvan-adonisjs/orm_vine`                 |
-| `@app/orm/commands/orm_migrate`| `@mergehez/ormvan-adonisjs/commands/orm_migrate`     |
+```bash
+# once, from each package you want to link
+cd ../orm/packages/core && bun link
+cd ../orm/packages/adonisjs && bun link
+
+# then in the app
+cd <app>
+bun link @mergehez/ormvan @mergehez/ormvan-adonisjs
+```
+
+A link resolves through the same `exports`, so the package's `dist/` has to exist in this checkout too:
+`bun run watch` keeps it current while you edit. To go back to the published packages, delete the symlinks and
+reinstall:
+
+```bash
+rm -rf node_modules/@mergehez/ormvan node_modules/@mergehez/ormvan-adonisjs
+bun install
+```

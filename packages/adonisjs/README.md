@@ -10,8 +10,8 @@ AdonisJS' contracts.
 npm install @mergehez/ormvan-adonisjs
 ```
 
-This pulls in `@mergehez/ormvan` for you. `@adonisjs/session` and `@vinejs/vine` are optional peers: install them only when
-you use the store or the rules.
+This installs `@mergehez/ormvan` for you, because the adapter declares it as a peer dependency. `@adonisjs/session` and
+`@vinejs/vine` are optional peers: install them only when you use the store or the rules.
 
 ## What it adds
 

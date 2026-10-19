@@ -25,10 +25,15 @@ previous build left behind.
 `@mergehez/ormvan` and `@mergehez/ormvan-adonisjs` go to npm; `@mergehez/ormvan-nestjs` stays out until it has something of its own to add.
 
 ```bash
-cd packages/core && npm publish       # the engine first: the adapter peers on it
-cd packages/adonisjs && npm publish
+( cd packages/core && npm publish )       # the engine first: the adapter peers on it
+( cd packages/adonisjs && npm publish )
 ```
 
 Each package's `prepublishOnly` script builds its `dist/` — the runtime and the declarations — before the upload, so a
-published tarball is never stale. Publish the engine first, and bump both versions together: the adapter peers on
+published package is never stale. Publish the engine first, and bump both versions together: the adapter peers on
 `^<version>` of `@mergehez/ormvan`, so an engine release outside that range leaves an app unable to install the pair.
+
+## Working on an app against the engine
+
+An app installs the published packages. To run it against this checkout while you edit, link the packages in — see
+[Consuming it from an app](./consuming.md#working-on-the-engine-and-an-app-at-once).

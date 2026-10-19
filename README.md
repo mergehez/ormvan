@@ -22,7 +22,7 @@ framework, so a framework the engine has not met yet — NestJS, or one of your 
 
 Start at [`docs/index.md`](./docs/index.md), or jump straight to the page you need:
 
-- [Consuming it from an app](./docs/consuming.md) — the tarball, what it carries, and why not a `file:` link
+- [Consuming it from an app](./docs/consuming.md) — installing the package, and what it carries
 - [Configuration](./docs/configuration.md) — `Orm.configure`, models, and your own query methods
 - [Writing](./docs/writing.md) — insert, update, delete, bulk writes, and values that are SQL expressions
 - [Joins and unions](./docs/joins-and-unions.md) — how a join adds typed columns, and where you can write one

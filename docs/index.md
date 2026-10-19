@@ -30,7 +30,7 @@ If one of these words is new to you, this is what it means on the following page
 
 If this is your first time here, read them in this order.
 
-1. [Consuming it from an app](./consuming.md) — how an app installs the engine, and why it travels as a tarball.
+1. [Consuming it from an app](./consuming.md) — how an app installs the engine, and what a package carries.
 2. [Configuration](./configuration.md) — `Orm.configure`, your own query methods, and what stays in the app.
 3. [Writing](./writing.md) — insert, update, delete, bulk writes, and values that are SQL expressions.
 4. [Joins and unions](./joins-and-unions.md) — how a join adds typed columns, and where you can write one.

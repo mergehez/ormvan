@@ -86,12 +86,11 @@ half-applied file. If your app would rather have its own command, the same primi
 
 ## Running them from a build
 
-Every package ships compiled JavaScript in its tarball, so the command works with plain node wherever the package sits —
-a `node ace build` output on a server included:
+Every package ships compiled JavaScript, so the command works with plain node wherever the package sits — a
+`node ace build` output on a server included:
 
 ```bash
 node ace.js orm:migrate
 ```
 
-(An install of the engine older than that — sources only — needed `node --import @poppinss/ts-exec ace.js orm:migrate`,
-because node refuses to strip types for files inside `node_modules`.)
+There is no loader flag to pass, because node never has to strip types for a file inside `node_modules`.
